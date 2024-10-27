@@ -17,43 +17,21 @@
         <div class="game">
             <div class="timer timeblack">
                 <div class="material materialblack">
-                    <div class="pawn">
-
-                    </div>
-                    <div class="rook">
-
-                    </div>
-                    <div class="knight">
-
-                    </div>
-                    <div class="bishop">
-
-                    </div>
-                    <div class="queen">
-
-                    </div>
+                    <div class="pawn"></div>
+                    <div class="rook"></div>
+                    <div class="knight"></div>
+                    <div class="bishop"></div>
+                    <div class="queen"></div>
                 </div>
             </div>
-            <div class="board">
-                
-            </div>
+            <div class="board"></div>
             <div class="timer timewhite">
                 <div class="material materialwhite">
-                    <div class="pawn">
-                        
-                    </div>
-                    <div class="rook">
-                        
-                    </div>
-                    <div class="knight">
-
-                    </div>
-                    <div class="bishop">
-
-                    </div>
-                    <div class="queen">
-
-                    </div>
+                    <div class="pawn"></div>
+                    <div class="rook"></div>
+                    <div class="knight"></div>
+                    <div class="bishop"></div>
+                    <div class="queen"></div>
                 </div>
             </div>
             <div class="info checkmate">
@@ -139,7 +117,63 @@
                     <button onclick="loadGame()">Load</button>
                 </div>
             </div>
+            <div class="evaluation" style="color: white; margin-top: 10px;"></div>
         </div>
     </div>
+
+    <script>
+        let stockfish = new Worker('stockfish.js');
+        let fenString = "startpos"; // Inicializa el FEN
+
+        function initStockfish() {
+            stockfish.postMessage('uci');
+
+            stockfish.onmessage = function(event) {
+                console.log(event.data);
+                // Maneja otros mensajes de Stockfish
+            };
+        }
+
+        function makeMove(move) {
+            fenString = updateFENAfterMove(fenString, move);
+            stockfish.postMessage(`position fen ${fenString}`);
+            stockfish.postMessage(`go movetime 500`);
+        }
+
+        stockfish.onmessage = function(event) {
+            if (event.data.startsWith('info')) {
+                const info = event.data.split(' ');
+                const scoreIndex = info.indexOf('score');
+                if (scoreIndex !== -1) {
+                    const scoreType = info[scoreIndex + 1];
+                    const scoreValue = parseInt(info[scoreIndex + 2]);
+                    displayMoveEvaluation(scoreType, scoreValue);
+                }
+            }
+        };
+
+        function displayMoveEvaluation(scoreType, scoreValue) {
+            let evaluationText;
+            if (scoreType === "cp") {
+                if (scoreValue > 0) {
+                    evaluationText = `Buena jugada! (+${scoreValue})`;
+                } else if (scoreValue < 0) {
+                    evaluationText = `Mala jugada! (${scoreValue})`;
+                } else {
+                    evaluationText = `Movimiento neutral.`;
+                }
+            } else if (scoreType === "mate") {
+                evaluationText = `Mate en ${Math.abs(scoreValue)}`;
+            }
+            document.querySelector('.evaluation').innerText = evaluationText;
+        }
+
+        function updateFENAfterMove(fen, move) {
+            // Lógica para actualizar el FEN
+            return updatedFEN; // Devuelve el nuevo FEN
+        }
+
+        initStockfish();
+    </script>
 </body>
 </html>
