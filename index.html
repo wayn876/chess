@@ -134,10 +134,32 @@
             document.getElementById('blackScore').innerText = blackScore;
         }
 
-        // Llama a updateScore con los valores de puntuación apropiados según las reglas de tu juego
-        // Ejemplo: Al mover una pieza, si se captura una pieza, puedes usar:
-        // updateScore(0, 1); // Si la pieza negra es capturada
-        // updateScore(1, 0); // Si la pieza blanca es capturada
+        function evaluatePosition(fen) {
+            const stockfish = new Worker('stockfish.js');
+
+            stockfish.postMessage('uci');
+
+            stockfish.onmessage = function(event) {
+                const message = event.data;
+
+                if (message.includes('uciok')) {
+                    stockfish.postMessage(`position fen ${fen}`);
+                    stockfish.postMessage('go depth 10'); // Profundidad de búsqueda
+                } else if (message.includes('info')) {
+                    const parts = message.split(' ');
+                    const scoreIndex = parts.indexOf('score');
+                    if (scoreIndex !== -1) {
+                        const score = parts[scoreIndex + 1];
+                        console.log('Evaluación:', score);
+                    }
+                }
+            };
+        }
+
+        // Llama a esta función con la posición actual en formato FEN
+        // Por ejemplo, al cargar una nueva posición:
+        // evaluatePosition('rnbqkb1r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
     </script>
 </body>
 </html>
+
