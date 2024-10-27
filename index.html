@@ -10,51 +10,50 @@
     <script src="game.js" defer></script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="img/pieces/wn.svg">
-    <style>
-        .evaluation-bar {
-            width: 100%;
-            height: 30px;
-            background-color: #444;
-            position: relative;
-            margin-top: 10px;
-        }
-        .evaluation-fill {
-            height: 100%;
-            transition: width 0.3s;
-        }
-        .evaluation-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            line-height: 30px;
-            color: white;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
-        <div class="score" style="color: white; text-align: right; width: 200px;">
-            <div>White score: <span id="whiteScore">0</span></div>
-            <div>Black score: <span id="blackScore">0</span></div>
-        </div>
+        <div class="score" style="color: white; text-align: right; width: 100px;">White score 0</div>
         <div class="game">
             <div class="timer timeblack">
                 <div class="material materialblack">
-                    <div class="pawn"></div>
-                    <div class="rook"></div>
-                    <div class="knight"></div>
-                    <div class="bishop"></div>
-                    <div class="queen"></div>
+                    <div class="pawn">
+
+                    </div>
+                    <div class="rook">
+
+                    </div>
+                    <div class="knight">
+
+                    </div>
+                    <div class="bishop">
+
+                    </div>
+                    <div class="queen">
+
+                    </div>
                 </div>
             </div>
-            <div class="board"></div>
+            <div class="board">
+                
+            </div>
             <div class="timer timewhite">
                 <div class="material materialwhite">
-                    <div class="pawn"></div>
-                    <div class="rook"></div>
-                    <div class="knight"></div>
-                    <div class="bishop"></div>
-                    <div class="queen"></div>
+                    <div class="pawn">
+                        
+                    </div>
+                    <div class="rook">
+                        
+                    </div>
+                    <div class="knight">
+
+                    </div>
+                    <div class="bishop">
+
+                    </div>
+                    <div class="queen">
+
+                    </div>
                 </div>
             </div>
             <div class="info checkmate">
@@ -67,10 +66,6 @@
                 <button onclick="selectpuzzle()">New puzzle</button>
                 <button onclick="closecheck()">Close</button>
             </div>
-        </div>
-        <div class="evaluation-bar">
-            <div class="evaluation-fill" id="evaluationFill" style="width: 50%; background-color: green;"></div>
-            <div class="evaluation-text" id="evaluationText">0</div>
         </div>
         <div class="play">
             <button class="invertboard">Flip board</button>
@@ -146,53 +141,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        let whiteScore = 0;
-        let blackScore = 0;
-
-        function updateScore(wScore, bScore) {
-            whiteScore += wScore;
-            blackScore += bScore;
-            document.getElementById('whiteScore').innerText = whiteScore;
-            document.getElementById('blackScore').innerText = blackScore;
-        }
-
-        function updateEvaluationBar(score) {
-            const fillElement = document.getElementById('evaluationFill');
-            const textElement = document.getElementById('evaluationText');
-
-            let percentage = Math.min(Math.max(score * 10, -100), 100); // Limitar entre -100 y 100
-            fillElement.style.width = `${(percentage + 100) / 2}%`; // Convertir a porcentaje
-            textElement.innerText = score;
-            fillElement.style.backgroundColor = score > 0 ? 'green' : score < 0 ? 'red' : 'yellow';
-        }
-
-        function evaluatePosition(fen) {
-            const stockfish = new Worker('stockfish.js');
-
-            stockfish.postMessage('uci');
-
-            stockfish.onmessage = function(event) {
-                const message = event.data;
-
-                if (message.includes('uciok')) {
-                    stockfish.postMessage(`position fen ${fen}`);
-                    stockfish.postMessage('go depth 10'); // Profundidad de búsqueda
-                } else if (message.includes('info')) {
-                    const parts = message.split(' ');
-                    const scoreIndex = parts.indexOf('score');
-                    if (scoreIndex !== -1) {
-                        const score = parseInt(parts[scoreIndex + 1], 10);
-                        updateEvaluationBar(score); // Actualiza la barra de evaluación
-                    }
-                }
-            };
-        }
-
-        // Llama a esta función con la posición actual en formato FEN
-        // Por ejemplo, al cargar una nueva posición:
-        // evaluatePosition('rnbqkb1r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
-    </script>
 </body>
 </html>
