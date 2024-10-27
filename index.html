@@ -13,47 +13,28 @@
 </head>
 <body>
     <div class="container">
-        <div class="score" style="color: white; text-align: right; width: 100px;">White score 0</div>
+        <div class="score" style="color: white; text-align: right; width: 200px;">
+            <div>White score: <span id="whiteScore">0</span></div>
+            <div>Black score: <span id="blackScore">0</span></div>
+        </div>
         <div class="game">
             <div class="timer timeblack">
                 <div class="material materialblack">
-                    <div class="pawn">
-
-                    </div>
-                    <div class="rook">
-
-                    </div>
-                    <div class="knight">
-
-                    </div>
-                    <div class="bishop">
-
-                    </div>
-                    <div class="queen">
-
-                    </div>
+                    <div class="pawn"></div>
+                    <div class="rook"></div>
+                    <div class="knight"></div>
+                    <div class="bishop"></div>
+                    <div class="queen"></div>
                 </div>
             </div>
-            <div class="board">
-                
-            </div>
+            <div class="board"></div>
             <div class="timer timewhite">
                 <div class="material materialwhite">
-                    <div class="pawn">
-                        
-                    </div>
-                    <div class="rook">
-                        
-                    </div>
-                    <div class="knight">
-
-                    </div>
-                    <div class="bishop">
-
-                    </div>
-                    <div class="queen">
-
-                    </div>
+                    <div class="pawn"></div>
+                    <div class="rook"></div>
+                    <div class="knight"></div>
+                    <div class="bishop"></div>
+                    <div class="queen"></div>
                 </div>
             </div>
             <div class="info checkmate">
@@ -141,5 +122,22 @@
             </div>
         </div>
     </div>
+
+    <script>
+        let whiteScore = 0;
+        let blackScore = 0;
+
+        function updateScore(wScore, bScore) {
+            whiteScore += wScore;
+            blackScore += bScore;
+            document.getElementById('whiteScore').innerText = whiteScore;
+            document.getElementById('blackScore').innerText = blackScore;
+        }
+
+        // Llama a updateScore con los valores de puntuación apropiados según las reglas de tu juego
+        // Ejemplo: Al mover una pieza, si se captura una pieza, puedes usar:
+        // updateScore(0, 1); // Si la pieza negra es capturada
+        // updateScore(1, 0); // Si la pieza blanca es capturada
+    </script>
 </body>
 </html>
