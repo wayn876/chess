@@ -1998,7 +1998,8 @@ if(window.location.href.includes('autoStart=true')){
         // Inicializa el motor
         stockfish.onmessage = function(event) {
             console.log(event);
-        }
+      };
+
 
 
 
