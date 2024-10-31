@@ -121,59 +121,5 @@
         </div>
     </div>
 
-    <script>
-        let stockfish = new Worker('stockfish2.js');
-        let fenString = "startpos"; // Inicializa el FEN
-
-        function initStockfish() {
-            stockfish.postMessage('uci');
-
-            stockfish.onmessage = function(event) {
-                console.log(event.data);
-                // Maneja otros mensajes de Stockfish
-            };
-        }
-
-        function makeMove(move) {
-            fenString = updateFENAfterMove(fenString, move);
-            stockfish.postMessage(`position fen ${fenString}`);
-            stockfish.postMessage(`go movetime 500`);
-        }
-
-        stockfish.onmessage = function(event) {
-            if (event.data.startsWith('info')) {
-                const info = event.data.split(' ');
-                const scoreIndex = info.indexOf('score');
-                if (scoreIndex !== -1) {
-                    const scoreType = info[scoreIndex + 1];
-                    const scoreValue = parseInt(info[scoreIndex + 2]);
-                    displayMoveEvaluation(scoreType, scoreValue);
-                }
-            }
-        };
-
-        function displayMoveEvaluation(scoreType, scoreValue) {
-            let evaluationText;
-            if (scoreType === "cp") {
-                if (scoreValue > 0) {
-                    evaluationText = `Buena jugada! (+${scoreValue})`;
-                } else if (scoreValue < 0) {
-                    evaluationText = `Mala jugada! (${scoreValue})`;
-                } else {
-                    evaluationText = `Movimiento neutral.`;
-                }
-            } else if (scoreType === "mate") {
-                evaluationText = `Mate en ${Math.abs(scoreValue)}`;
-            }
-            document.querySelector('.evaluation').innerText = evaluationText;
-        }
-
-        function updateFENAfterMove(fen, move) {
-            // Lógica para actualizar el FEN
-            return updatedFEN; // Devuelve el nuevo FEN
-        }
-
-        initStockfish();
-    </script>
 </body>
 </html>
