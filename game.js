@@ -1991,12 +1991,3 @@ function attackedKing(x,y){
 if(window.location.href.includes('autoStart=true')){
     play()
 }
-
-        const stockfish = STOCKFISH();
-        const resultsDiv = document.getElementById('results');
-
-        // Inicializa el motor
-        stockfish.onmessage = function(event) {
-            console.log(event);
-      };
-
