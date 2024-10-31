@@ -1991,3 +1991,61 @@ function attackedKing(x,y){
 if(window.location.href.includes('autoStart=true')){
     play()
 }
+
+        const stockfish = STOCKFISH();
+        const resultsDiv = document.getElementById('results');
+
+        // Inicializa el motor
+        stockfish.onmessage = function(event) {
+            console.log(event);
+        }
+
+
+
+
+
+        function analyzeMoves(moves) {
+            resultsDiv.innerHTML = ''; // Limpia resultados anteriores
+            const moveList = moves.split(' ');
+
+            moveList.forEach(move => {
+                stockfish.postMessage(`position startpos moves ${move}`);
+                stockfish.postMessage('go depth 20'); // Ajusta la profundidad según necesites
+
+                stockfish.onmessage = function(event) {
+                    if (event.includes('bestmove')) {
+                        const bestMove = event.split(' ')[1];
+                        classifyMove(move, bestMove);
+                    }
+                };
+            });
+        }
+
+        function classifyMove(move, bestMove) {
+            // Simula el análisis de cada movimiento y clasifícalo
+            let classification;
+            if (move === bestMove) {
+                classification = 'Best';
+            } else if (isGreatMove(move, bestMove)) {
+                classification = 'Great';
+            } else {
+                classification = 'Bad';
+            }
+
+            // Muestra el resultado en el DOM
+            const moveDiv = document.createElement('div');
+            moveDiv.className = 'move ' + classification.toLowerCase();
+            moveDiv.innerText = `${move}: ${classification}`;
+            resultsDiv.appendChild(moveDiv);
+        }
+
+        function isGreatMove(move, bestMove) {
+            // Lógica simple para determinar si es un "gran" movimiento
+            // Esta parte debe ser mejorada con análisis real del motor
+            return Math.random() < 0.5; // Simula un 50% de probabilidad de ser un gran movimiento
+        }
+
+        document.getElementById('analyzeBtn').onclick = function() {
+            const moves = document.getElementById('movesInput').value;
+            analyzeMoves(moves);
+        };
